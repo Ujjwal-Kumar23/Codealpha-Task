@@ -1,0 +1,101 @@
+// ===== Audio Playlist =====
+const songs = [
+  {
+    title: "Dhun",
+    artist: "Mithoon, Arijit Singh",
+    src: "./audio/dhun.mp3"
+  },
+  {
+    title: "Kesariya",
+    artist: "Arijit Singh",
+    src: "./audio/kesariya.mp3"
+  },
+  {
+    title: "Humdard",
+    artist: "Arijit Singh",
+    src: "./audio/humdard.mp3"
+  }
+];
+
+let currentSongIndex = 0;
+let isPlaying = false;
+
+// Create audio object
+const audio = new Audio(songs[currentSongIndex].src);
+
+// ===== UI Elements =====
+const controls = document.querySelectorAll(".player-control-icon");
+const prevBtn = controls[0];
+const playPauseBtn = controls[2];
+const nextBtn = controls[4];
+
+const progressBar = document.querySelector(".progress-bar");
+const currentTimeEl = document.querySelector(".current-time");
+const totalTimeEl = document.querySelector(".total-time");
+
+// ===== Functions =====
+function loadSong(index) {
+  audio.src = songs[index].src;
+  audio.load();
+}
+
+function playSong() {
+  audio.play();
+  isPlaying = true;
+  playPauseBtn.style.opacity = "1";
+}
+
+function pauseSong() {
+  audio.pause();
+  isPlaying = false;
+}
+
+function nextSong() {
+  currentSongIndex++;
+  if (currentSongIndex >= songs.length) {
+    currentSongIndex = 0;
+  }
+  loadSong(currentSongIndex);
+  playSong();
+}
+
+function prevSong() {
+  currentSongIndex--;
+  if (currentSongIndex < 0) {
+    currentSongIndex = songs.length - 1;
+  }
+  loadSong(currentSongIndex);
+  playSong();
+}
+
+// ===== Event Listeners =====
+playPauseBtn.addEventListener("click", () => {
+  isPlaying ? pauseSong() : playSong();
+});
+
+nextBtn.addEventListener("click", nextSong);
+prevBtn.addEventListener("click", prevSong);
+
+// ===== Progress Bar =====
+audio.addEventListener("timeupdate", () => {
+  const progress = (audio.currentTime / audio.duration) * 100;
+  progressBar.value = progress || 0;
+
+  currentTimeEl.textContent = formatTime(audio.currentTime);
+  totalTimeEl.textContent = formatTime(audio.duration);
+});
+
+progressBar.addEventListener("input", () => {
+  audio.currentTime = (progressBar.value / 100) * audio.duration;
+});
+
+// ===== Helper =====
+function formatTime(time) {
+  if (isNaN(time)) return "00:00";
+  const min = Math.floor(time / 60);
+  const sec = Math.floor(time % 60);
+  return `${min < 10 ? "0" + min : min}:${sec < 10 ? "0" + sec : sec}`;
+}
+
+// Auto play next when song ends
+audio.addEventListener("ended", nextSong);
