@@ -1,4 +1,4 @@
-# 💻 Frontend Mini Projects (HTML, CSS & JavaScript)
+# 💻 Frontend Mini Projects (HTML, CSS & JavaScript).
 
 This repository contains **three frontend mini projects** developed using **HTML, CSS, and JavaScript**.  
 These projects focus on UI design, responsiveness, DOM manipulation, and basic JavaScript logic.
